@@ -1,18 +1,22 @@
 const express = require('express');
+const { makeExecutableSchema } = require('@graphql-tools/schema');
 const { graphqlHTTP } = require('express-graphql');
-const { buildSchema } = require('graphql');
+const { loadFilesSync } = require('@graphql-tools/load-files');
 
 const app = express();
 const port = 3000;
 
-const schema = buildSchema(`
-  type Query {
-    description: String
-  }
-`);
+const loadedFiles = loadFilesSync("**/*", {
+  extensions: ['graphql']
+});
+
+const schema = makeExecutableSchema({
+  typeDefs: loadedFiles
+});
 
 const root = {
-  description: "hello world"
+  posts: require('./posts/posts.model'),
+  comments: require('./comments/comments.model')
 };
 
 app.use('/graphql', graphqlHTTP({
