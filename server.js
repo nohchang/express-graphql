@@ -2,7 +2,11 @@ const express = require('express');
 const { makeExecutableSchema } = require('@graphql-tools/schema');
 const { loadFilesSync } = require('@graphql-tools/load-files');
 const path = require('path');
-const { ApolloServer } = require('apollo-server-express');
+
+const { ApolloServer } = require('@apollo/server');
+const cors = require('cors');
+const { json } = require('body-parser');
+const { expressMiddleware } = require('@apollo/server/express4');
 
 const port = 3000;
 
@@ -26,7 +30,13 @@ async function startApolloServer() {
 
   await server.start();
 
-  server.applyMiddleware({ app, path: '/graphql' });
+  app.use('/graphql',
+    cors(),
+    json(),
+    expressMiddleware(server, {
+      context: async ({ req }) => ({ token: req.headers.token })
+    })
+  );
 
   app.listen(port, () => {
     console.log(`Running a GraphQL API server...`);
