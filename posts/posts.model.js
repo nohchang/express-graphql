@@ -23,6 +23,13 @@ function getAllPosts() {
   return posts;
 }
 
+function getPostById(id) {
+  return posts.find(post => {
+    return post.id === id
+  })
+}
+
 module.exports = {
-  getAllPosts
+  getAllPosts,
+  getPostById
 }
