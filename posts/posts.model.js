@@ -29,7 +29,20 @@ function getPostById(id) {
   })
 }
 
+function addNewPost(id, title, description) {
+  const newPost = {
+    id: id,
+    title: title,
+    description: description,
+    comments: []
+  }
+
+  posts.push(newPost);
+  return newPost;
+}
+
 module.exports = {
   getAllPosts,
-  getPostById
+  getPostById,
+  addNewPost
 }
